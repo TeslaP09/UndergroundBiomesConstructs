@@ -69,6 +69,7 @@ public class UBConfig implements UBSettings {
   public final BooleanSetting replaceCobblestone = new BooleanSetting(CATEGORY_GENERATION, "ReplaceCobblestone");
   public final BooleanSetting replaceStoneBrick = new BooleanSetting(CATEGORY_GENERATION, "ReplaceStoneBrick");
   public final BooleanSetting replaceStoneSlab = new BooleanSetting(CATEGORY_GENERATION, "ReplaceStoneSlab");
+  public final BooleanSetting replaceStoneStairs = new BooleanSetting(CATEGORY_GENERATION, "ReplaceStoneStairs");
   public final BooleanSetting replaceStoneWall = new BooleanSetting(CATEGORY_GENERATION, "ReplaceStoneWall");
   public final BooleanSetting replaceOvergrown = new BooleanSetting(CATEGORY_GENERATION, "ReplaceOvergrown");
   public final BooleanSetting replaceMossyCobblestone = new BooleanSetting(CATEGORY_GENERATION, "ReplaceMossyCobble");
@@ -186,6 +187,8 @@ public class UBConfig implements UBSettings {
         "Replace vanilla stone brick with UB variants, helps with structures");
     replaceStoneSlab.initProperty(configuration, true,
         "Replace vanilla slabs with UB variants, helps with structures");
+    replaceStoneStairs.initProperty(configuration, true,
+      "Replace vanilla stairs with UB variants, helps with structures");
     replaceStoneWall.initProperty(configuration, true,
         "Replace vanilla walls with UB variants, helps with structures");
     replaceMonsterStone.initProperty(configuration, true, "Replace monster eggs with UBC variants.");
@@ -468,6 +471,11 @@ public class UBConfig implements UBSettings {
   @Override
   public boolean replaceStoneSlab() {
     return replaceStoneSlab.getValue();
+  }
+
+  @Override
+  public boolean replaceStoneStairs() {
+    return replaceStoneStairs.getValue();
   }
 
   @Override

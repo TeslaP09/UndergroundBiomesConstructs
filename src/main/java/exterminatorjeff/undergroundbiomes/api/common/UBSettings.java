@@ -52,6 +52,8 @@ public interface UBSettings {
 
   boolean replaceStoneSlab();
 
+  boolean replaceStoneStairs();
+
   boolean replaceStoneWall();
 
   boolean replaceMonsterStone();

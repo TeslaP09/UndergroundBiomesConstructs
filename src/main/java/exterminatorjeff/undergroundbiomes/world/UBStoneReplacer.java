@@ -6,8 +6,10 @@ package exterminatorjeff.undergroundbiomes.world;
 import exterminatorjeff.undergroundbiomes.api.*;
 import exterminatorjeff.undergroundbiomes.api.enums.UBStoneStyle;
 import exterminatorjeff.undergroundbiomes.api.names.SlabEntry;
+import exterminatorjeff.undergroundbiomes.api.names.StairsEntry;
 import exterminatorjeff.undergroundbiomes.common.block.UBStone;
 import exterminatorjeff.undergroundbiomes.common.block.slab.UBStoneSlab;
+import exterminatorjeff.undergroundbiomes.common.block.stairs.UBStoneStairs;
 import exterminatorjeff.undergroundbiomes.common.block.wall.UBStoneWall;
 import exterminatorjeff.undergroundbiomes.config.UBConfig;
 import exterminatorjeff.undergroundbiomes.intermod.OresRegistry;
@@ -18,10 +20,12 @@ import net.minecraft.block.BlockSand;
 import net.minecraft.block.BlockSandStone;
 import net.minecraft.block.BlockSilverfish;
 import net.minecraft.block.BlockStoneSlab;
+import net.minecraft.block.BlockStairs;
 import net.minecraft.block.BlockWall;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -38,6 +42,9 @@ import exterminatorjeff.undergroundbiomes.common.block.*;
 import exterminatorjeff.undergroundbiomes.api.enums.UBStoneType;
 import exterminatorjeff.undergroundbiomes.api.API;
 import net.minecraftforge.fml.common.Loader;
+
+import static net.minecraft.block.BlockStoneSlab.EnumType.SMOOTHBRICK;
+import static net.minecraft.init.Blocks.*;
 
 public abstract class UBStoneReplacer implements UBStrataColumnProvider {
 
@@ -103,7 +110,7 @@ public abstract class UBStoneReplacer implements UBStrataColumnProvider {
              * Stone and variants
              */
             // Replace stone with UBified version
-            if (currentBlock == Blocks.STONE) {
+            if (currentBlock == STONE) {
               setBlock(world, storage, sendUpdates, x, y, z, currentBlockPos, currentBiome.getStrataBlockAtLayer(yPos + y + variation));
               continue;
             }
@@ -131,7 +138,7 @@ public abstract class UBStoneReplacer implements UBStrataColumnProvider {
               continue;
             }
             // Replace cobblestone with UBified version
-            if ( currentBlock == Blocks.COBBLESTONE
+            if ( currentBlock == COBBLESTONE
               && API.SETTINGS.replaceCobblestone() ) {
               IBlockState strata = currentBiome.getStrataBlockAtLayer(yPos + y + variation);
               if (strata.getBlock() instanceof UBStone) {
@@ -203,6 +210,53 @@ public abstract class UBStoneReplacer implements UBStrataColumnProvider {
               }
               continue;
             }
+
+
+            if (currentBlock instanceof BlockStairs && API.SETTINGS.replaceStoneStairs()) {
+
+              UBStoneStyle style;
+
+              if (currentBlock == Blocks.STONE_STAIRS) {
+                if (!API.SETTINGS.replaceCobblestone()) continue;
+                style = UBStoneStyle.COBBLE;
+              } else if (currentBlock == Blocks.STONE_BRICK_STAIRS) {
+                if (!API.SETTINGS.replaceStoneBrick()) continue;
+                style = UBStoneStyle.BRICK;
+              } else if (currentBlock == Blocks.SANDSTONE_STAIRS) {
+                if (!API.SETTINGS.replaceSandstone()) continue;
+                style = UBStoneStyle.SANDSTONE;
+              } else if (currentBlock == Blocks.BRICK_STAIRS) {
+                style = UBStoneStyle.BRICK;
+              } else {
+                continue;
+              }
+
+              IBlockState strata = currentBiome.getStrataBlockAtLayer(yPos + y + variation);
+              if (!(strata.getBlock() instanceof UBStone)) continue;
+
+              UBStone ubStone = (UBStone) strata.getBlock();
+
+              StairsEntry stairsEntry = StonesRegistry.INSTANCE
+                .stoneFor(ubStone.getStoneType(), style)
+                .getStairs();
+
+              if (stairsEntry == null) continue;
+
+              EnumFacing facing = currentBlockState.getValue(BlockStairs.FACING);
+              Block ubStairBlock = stairsEntry.getBlock(facing);
+
+              int stoneMeta = ubStone.getMetaFromState(strata) & 7;
+
+              IBlockState newState = ubStairBlock.getStateFromMeta(stoneMeta)
+                .withProperty(BlockStairs.FACING, facing)
+                .withProperty(BlockStairs.HALF, currentBlockState.getValue(BlockStairs.HALF));
+
+              setBlock(world, storage, sendUpdates, x, y, z, currentBlockPos, newState);
+              continue;
+            }
+
+
+
             // Replace stone double slab with UBified version
             if ( currentBlock == Blocks.DOUBLE_STONE_SLAB
               && API.SETTINGS.replaceStoneSlab() ) {
@@ -323,7 +377,7 @@ public abstract class UBStoneReplacer implements UBStrataColumnProvider {
               continue;
             }
             // Replace yellow sand with UBified version
-            if ( currentBlock == Blocks.SAND
+            if ( currentBlock == SAND
               && API.SETTINGS.replaceSand()
               && currentBlockState.getProperties().get(BlockSand.VARIANT) != BlockSand.EnumType.RED_SAND
               && !API.SETTINGS.replaceSandExcludedBiomes().contains(biomeName) ) {
@@ -434,9 +488,11 @@ public abstract class UBStoneReplacer implements UBStrataColumnProvider {
 
   private void setBlock(final World world, final ExtendedBlockStorage storage, final boolean sendUpdates,
                         final int x, final int y, final int z, final BlockPos blockPos, final IBlockState blockState) {
-    storage.set(x, y, z, blockState);
+
     if (sendUpdates) {
-      world.notifyBlockUpdate(blockPos, Blocks.STONE.getDefaultState(), blockState, 3);
+      world.setBlockState(blockPos, blockState, 3);
+    } else {
+      storage.set(x, y, z, blockState);
     }
   }
 
@@ -477,7 +533,7 @@ public abstract class UBStoneReplacer implements UBStrataColumnProvider {
 
       public IBlockState stone(int y) {
         if (y >= UBConfig.SPECIFIC.generationHeight())
-          return Blocks.STONE.getDefaultState();
+          return STONE.getDefaultState();
         for (StrataLayer stratum : strata) {
           if (stratum.heightInLayer(y + variation)) {
             return stratum.filler;
@@ -488,7 +544,7 @@ public abstract class UBStoneReplacer implements UBStrataColumnProvider {
 
       public IBlockState cobblestone(int height) {
         if (height >= UBConfig.SPECIFIC.generationHeight())
-          return Blocks.COBBLESTONE.getDefaultState();
+          return COBBLESTONE.getDefaultState();
         IBlockState stone = stone(height);
         if (stone.getBlock() == API.IGNEOUS_STONE.getBlock()) {
           return API.IGNEOUS_COBBLE.getBlock().getStateFromMeta(stone.getBlock().getMetaFromState(stone));
