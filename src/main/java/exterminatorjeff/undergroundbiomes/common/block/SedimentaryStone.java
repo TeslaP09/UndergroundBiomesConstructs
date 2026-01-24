@@ -116,12 +116,12 @@ public class SedimentaryStone extends UBStone {
 
   @Override
   public float getBlockHardness(IBlockState state, World worldIn, BlockPos pos) {
-    return getBaseHardness() * state.getValue(SEDIMENTARY_VARIANT_PROPERTY).getHardness();
+    return Math.round(getBaseHardness() * state.getValue(SEDIMENTARY_VARIANT_PROPERTY).getHardness() * 10000f) / 10000f;
   }
 
   @Override
   public float getExplosionResistance(World world, BlockPos pos, @Nullable Entity exploder, Explosion explosion) {
-    return getBaseResistance() * world.getBlockState(pos).getValue(SEDIMENTARY_VARIANT_PROPERTY).getResistance();
+    return Math.round(getBaseResistance() * world.getBlockState(pos).getValue(SEDIMENTARY_VARIANT_PROPERTY).getResistance() * 10000f) / 10000f;
   }
 
   @Override

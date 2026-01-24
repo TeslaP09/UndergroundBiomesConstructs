@@ -70,12 +70,12 @@ public abstract class UBStone extends Block implements UBBlock {
 
   @Override
   public Block setHardness(float hardness) {
-    return super.setHardness(hardness * BASE_HARDNESS);
+    return super.setHardness(Math.round(hardness * BASE_HARDNESS * 10000f) / 10000f);
   }
 
   @Override
   public Block setResistance(float resistance) {
-    return super.setResistance(resistance * BASE_RESISTANCE);
+    return super.setResistance(Math.round(resistance * BASE_RESISTANCE * 10000f) / 10000f);
   }
 
   public float getBaseHardness() {

@@ -40,7 +40,7 @@ public class MetamorphicMossyCobble extends MetamorphicStone {
 
   @Override
   public Block setHardness(float hardness) {
-    return super.setHardness(hardness * COBBLE_HARDNESS_MODIFIER);
+    return super.setHardness(Math.round(hardness * COBBLE_HARDNESS_MODIFIER * 10000f) / 10000f);
   }
 
   @Override
