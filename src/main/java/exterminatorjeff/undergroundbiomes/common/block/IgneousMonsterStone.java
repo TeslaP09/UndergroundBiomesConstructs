@@ -107,12 +107,12 @@ public class IgneousMonsterStone extends UBStone {
 
   @Override
   public float getBlockHardness(IBlockState state, World worldIn, BlockPos pos) {
-    return Math.round(getBaseHardness() * state.getValue(IGNEOUS_VARIANT_PROPERTY).getHardness() * 1000f) / 1000f;
+    return Math.round(getBaseHardness() * state.getValue(IGNEOUS_VARIANT_PROPERTY).getHardness() * 100f) / 100f;
   }
 
   @Override
   public float getExplosionResistance(World world, BlockPos pos, @Nullable Entity exploder, Explosion explosion) {
-    return Math.round(getBaseResistance() * world.getBlockState(pos).getValue(IGNEOUS_VARIANT_PROPERTY).getResistance() * 1000f) / 1000f;
+    return Math.round(getBaseResistance() * world.getBlockState(pos).getValue(IGNEOUS_VARIANT_PROPERTY).getResistance() * 100f) / 100f;
   }
 
   @Override
