@@ -33,7 +33,7 @@ public class IgneousCobble extends IgneousStone {
 
   @Override
   public Block setHardness(float hardness) {
-    return super.setHardness(Math.round(hardness * COBBLE_HARDNESS_MODIFIER * 10000f) * 10000f);
+    return super.setHardness(Math.round(hardness * COBBLE_HARDNESS_MODIFIER * 10000f) / 10000f);
   }
 
   @Override
