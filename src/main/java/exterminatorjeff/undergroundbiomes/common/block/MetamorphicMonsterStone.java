@@ -97,12 +97,12 @@ public class MetamorphicMonsterStone extends UBStone {
 
   @Override
   public float getBlockHardness(IBlockState state, World worldIn, BlockPos pos) {
-    return Math.round(getBaseHardness() * state.getValue(METAMORPHIC_VARIANT_PROPERTY).getHardness() * 10000f) / 10000f;
+    return Math.round(getBaseHardness() * state.getValue(METAMORPHIC_VARIANT_PROPERTY).getHardness() * 1000f) / 1000f;
   }
 
   @Override
   public float getExplosionResistance(World world, BlockPos pos, @Nullable Entity exploder, Explosion explosion) {
-    return Math.round(getBaseResistance() * world.getBlockState(pos).getValue(METAMORPHIC_VARIANT_PROPERTY).getResistance() * 10000f) / 10000f;
+    return Math.round(getBaseResistance() * world.getBlockState(pos).getValue(METAMORPHIC_VARIANT_PROPERTY).getResistance() * 1000f) / 1000f;
   }
 
   @Override

@@ -47,7 +47,7 @@ public abstract class UBStoneStairs extends BlockStairs implements UBSubBlock {
     this.facing = facing;
     this.itemBlock = itemBlock;
     setHardness(baseStone().getBaseHardness());
-    setResistance(Math.round(baseStone().getBaseResistance() / 3.0F * 10000f) / 10000f);
+    setResistance(Math.round(baseStone().getBaseResistance() / 3.0F * 1000f) / 1000f);
     useNeighborBrightness = true;
   }
 
